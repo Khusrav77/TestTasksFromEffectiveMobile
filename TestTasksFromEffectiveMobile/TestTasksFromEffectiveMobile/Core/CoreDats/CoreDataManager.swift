@@ -27,7 +27,7 @@ final class CoreDataManager {
     
     // MARK: - Initializer
     private init() {
-        persistentContainer = NSPersistentContainer(name: "Entities")
+        persistentContainer = NSPersistentContainer(name: "TodoContainer")
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
         persistentContainer.loadPersistentStores {storeDescription, error  in
             if let error = error as NSError? {
