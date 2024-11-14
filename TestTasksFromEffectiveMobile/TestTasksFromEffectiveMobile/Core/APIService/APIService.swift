@@ -11,11 +11,12 @@ protocol APIService {
     func fetchToDos() async throws -> TodoResponse
 }
 
-class APIServiceImpl: APIService {
+final class APIServiceImpl: APIService {
     
     // MARK: - Properties
     private let urlTodos = "https://dummyjson.com/todos"
     private let decoder = JSONDecoder()
+    
     
     // MARK: - Initializer
     private init() {}
