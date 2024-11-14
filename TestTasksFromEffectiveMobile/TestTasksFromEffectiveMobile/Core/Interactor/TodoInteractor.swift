@@ -9,9 +9,9 @@ import Foundation
 
 protocol TodoInteractor {
     func fetchTodos() async throws -> [ToDo]
-    func addTodo(newTodo: ToDo) throws
+    func saveToDo(_ newTodo: ToDo) throws
     func updateTodo(_ todo: ToDo) throws
-    func deleteTodo(id: Int) throws
+    func deleteTodo(_ id: Int) throws
 }
 
 final class TodoInteractorImpl: TodoInteractor {
@@ -31,7 +31,7 @@ final class TodoInteractorImpl: TodoInteractor {
         return response.todos
     }
     
-    func addTodo(newTodo: ToDo) throws {
+    func saveToDo(_ newTodo: ToDo) throws {
         
     }
     
@@ -40,7 +40,7 @@ final class TodoInteractorImpl: TodoInteractor {
         
     }
     
-    func deleteTodo(id: Int) {
+    func deleteTodo(_ id: Int) {
         
     }
 }
