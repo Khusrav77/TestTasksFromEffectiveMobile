@@ -8,10 +8,18 @@
 import Foundation
 import CoreData
 
-final class CoreDataManager {
-    // MARK: - Properties
-    static let shared = CoreDataManager()
+protocol CoreDataManager {
+    var viewContext: NSManagedObjectContext { get }
+    var backgroundContext: NSManagedObjectContext { get }
     
+    func saveContext()
+   
+    
+}
+
+final class CoreDataManagerImpl: CoreDataManager {
+    
+    // MARK: - Properties
     private let persistentContainer: NSPersistentContainer
     
     
@@ -26,7 +34,7 @@ final class CoreDataManager {
     
     
     // MARK: - Initializer
-    private init() {
+    init() {
         persistentContainer = NSPersistentContainer(name: "TodoContainer")
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
         persistentContainer.loadPersistentStores {storeDescription, error  in
@@ -36,6 +44,7 @@ final class CoreDataManager {
         }
     }
     
+   
     
     // MARK: - Methods
     func saveContext() {

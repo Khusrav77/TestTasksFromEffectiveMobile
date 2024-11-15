@@ -10,7 +10,9 @@ import Foundation
 struct ToDo: Codable, Identifiable {
     let id: Int
     let todo: String
+    let description: String
     let userId: Int
+    let createdAt: Date
     let completed: Bool
 }
 
