@@ -4,71 +4,62 @@
 //
 //  Created by Khusrav Safiev on 11/14/24.
 //
-
 import Foundation
 
+
 protocol TodoPresenter: ObservableObject {
-    var todos: [ToDo] { get set}
+    var todos: [TodoEntity] { get set }
     func loadTodos() async
-    func saveTodo(_ todo: ToDo) async
-    func updateTodo(_ todo: ToDo) async
-    func deleteTodoById(_ id: Int) async
-    
+    func saveTodo(title: String, description: String?) async
+    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) async
+    func deleteTodo(_ todo: TodoEntity) async
 }
 
 class TodoPresenterImpl: TodoPresenter {
     // MARK: - Properties
-    @Published var todos: [ToDo] = []
+    @Published var todos: [TodoEntity] = []
     
     private let interactor: TodoInteractor
-    
     
     // MARK: - Initializer
     init(todoInteractor: TodoInteractor) {
         self.interactor = todoInteractor
     }
     
-    
-    
     // MARK: - Methods
     func loadTodos() async {
         do {
             todos = try await interactor.fetchTodos()
-            
         } catch {
             print("Error loading todos: \(error)")
         }
     }
     
-    func saveTodo(_ todo: ToDo) async {
+    func saveTodo(title: String, description: String?) async {
         do {
-            try interactor.saveToDo(todo)
+            try interactor.saveToDo(title: title, description: description)
             await loadTodos()
-       
         } catch {
             print("Error saving todo: \(error)")
         }
     }
     
-    func updateTodo(_ todo: ToDo) async {
+    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) async {
         do {
-            try interactor.updateTodo(todo)
+            try interactor.updateToDo(todo, newTitle: newTitle, newDescription: newDescription)
             await loadTodos()
-            
         } catch {
             print("Error updating todo: \(error)")
         }
     }
     
-    func deleteTodoById(_ id: Int) async {
+    func deleteTodo(_ todo: TodoEntity) async {
         do {
-            try interactor.deleteTodo(id)
+            try interactor.deleteTodo(todo)
             await loadTodos()
-            
-        } catch  {
+        } catch {
             print("Error deleting todo: \(error)")
         }
     }
-    
-    
 }
+
