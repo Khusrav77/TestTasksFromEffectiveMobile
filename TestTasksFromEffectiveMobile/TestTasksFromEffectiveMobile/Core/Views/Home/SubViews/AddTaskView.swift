@@ -18,14 +18,9 @@ struct AddTaskView: View {
                 TextField("Title", text: $title)
                     .font(.headline)
                     .padding()
-                    .background(Color.primary.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                
-                TextField("Descripsion", text: $title)
-                    .font(.headline)
-                    .padding()
-                    .background(Color.primary.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                   // .background(Color.primary.opacity(0.15))
+                   // .clipShape(RoundedRectangle(cornerRadius: 15))
+                TextArea(text: $description, placeholder: "add your todo here")
                 
                 Button{
                     

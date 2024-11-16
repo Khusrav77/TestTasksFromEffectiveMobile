@@ -21,7 +21,7 @@ struct TextArea: View {
         ZStack(alignment: .topLeading) {
             if text.isEmpty {
                 Text(placeholder)
-                    
+                    .foregroundStyle(.primary)
                     .padding(.horizontal, 8)
                     .padding(.top, 12)
                 
