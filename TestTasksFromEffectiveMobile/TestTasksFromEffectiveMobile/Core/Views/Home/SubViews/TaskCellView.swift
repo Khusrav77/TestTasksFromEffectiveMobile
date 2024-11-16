@@ -64,7 +64,7 @@ struct TaskCellView: View {
     }
     
     // MARK: - Mthode
-    private func formatDate(_ date: Date) -> String {
+     func formatDate(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd/MM/yy"
         return dateFormatter.string(from: date)
