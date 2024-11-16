@@ -8,14 +8,30 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var router = TodoRouter()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        
+        NavigationStack(path: $router.path) {
+            MainTabView()
+                .navigationDestination(for: Destination.self) { destination in
+                    switch destination {
+                   
+                    case.listTodos:
+                        MainTabView()
+                    
+                    case.detailsTodo:
+                        DetailView()
+                    
+                    case.editTodo:
+                        EditTaskView()
+                        
+                    case.createTodo:
+                        AddTaskView()
+                    }
+                }
         }
-        .padding()
+        .environmentObject(router)
     }
 }
 
