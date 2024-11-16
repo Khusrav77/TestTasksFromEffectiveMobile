@@ -23,6 +23,7 @@ struct CustomSearchBar: View {
                     .padding(.leading, 10)
                 
                 TextField(placeholder, text: $text)
+                    .foregroundStyle(.secondary)
                     
                 
                 Image(systemName: "mic.fill")

@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreData
 
-struct TodoCellView: View {
+struct TaskCellView: View {
     // MARK: - Properties
     @State var completed: Bool = false
     let action: () -> Void
@@ -20,7 +20,7 @@ struct TodoCellView: View {
                 action()
             }label: {
                 Image(systemName: completed ?  "checkmark.circle" : "circle")
-                    .foregroundStyle(Color.orange)
+                    .foregroundStyle(completed ? Color.yellow : Color.secondary)
                 
             }
             .buttonStyle(.borderless)
@@ -75,5 +75,5 @@ struct TodoCellView: View {
 #Preview {
     
     
-    TodoCellView(action: {})
+    TaskCellView(action: {})
 }
