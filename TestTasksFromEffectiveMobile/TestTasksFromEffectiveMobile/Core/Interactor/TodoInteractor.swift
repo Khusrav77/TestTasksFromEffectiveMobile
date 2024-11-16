@@ -61,7 +61,6 @@ final class TodoInteractorImpl: TodoInteractor {
     
     
     func updateToDo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws {
-        let context = coreDataManager.viewContext
         
         if let newTitle = newTitle {
             todo.todo = newTitle
