@@ -81,6 +81,8 @@ struct DetailView: View {
                 .foregroundStyle(.red)
                 
             }
+            .scrollContentBackground(.hidden)
+            .background(Color(.systemGroupedBackground))
             .padding(.horizontal)
             Spacer()
         }

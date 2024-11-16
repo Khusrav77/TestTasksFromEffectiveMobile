@@ -1,5 +1,5 @@
 //
-//  AddTaskView.swift
+//  EditTaskView.swift
 //  TestTasksFromEffectiveMobile
 //
 //  Created by Khusrav Safiev on 11/16/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddTaskView: View {
+struct EditTaskView: View {
     @State private var title: String = ""
     @State private var description: String = ""
     @Environment(\.dismiss) var dismiss
@@ -16,16 +16,13 @@ struct AddTaskView: View {
             
             VStack(spacing: 16) {
                 TextField("Title", text: $title)
-                    .font(.headline)
+                    .font(.title)
                     .padding()
-                    .background(Color.primary.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                   
+
                 
-                TextField("Descripsion", text: $title)
-                    .font(.headline)
-                    .padding()
-                    .background(Color.primary.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                TextArea(text: $description, placeholder: "add your todo here")
+               
                 
                 Button{
                     
@@ -46,7 +43,7 @@ struct AddTaskView: View {
         }
         
         // MARK: - Navigation Bar
-        .navigationTitle("New Task")
+        .navigationTitle("Править задачу")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar{
@@ -65,7 +62,7 @@ struct AddTaskView: View {
 
 #Preview {
     NavigationView {
-        AddTaskView()
+        EditTaskView()
     }
-    
+   
 }
