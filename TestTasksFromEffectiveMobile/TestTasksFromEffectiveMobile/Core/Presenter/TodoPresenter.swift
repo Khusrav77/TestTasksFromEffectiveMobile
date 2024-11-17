@@ -9,15 +9,23 @@ import Foundation
 
 protocol TodoPresenter: ObservableObject {
     var todos: [TodoEntity] { get set }
-    func loadTodos() async
-    func saveTodo(title: String, description: String?) async
-    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) async
-    func deleteTodo(_ todo: TodoEntity) async
+    func loadTodos()
+    func saveTodo(title: String, description: String?)
+    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?)
+    func deleteTodo(_ todo: TodoEntity)
 }
 
 class TodoPresenterImpl: TodoPresenter {
+   
     // MARK: - Properties
+    @Published var selectedTodo: TodoEntity?
+    
     @Published var todos: [TodoEntity] = []
+   
+    @Published var title: String = ""
+    @Published var description: String = ""
+    @Published var completed: Bool = false
+    
     
     private let interactor: TodoInteractor
     
@@ -26,37 +34,44 @@ class TodoPresenterImpl: TodoPresenter {
         self.interactor = todoInteractor
     }
     
+   
     // MARK: - Methods
-    func loadTodos() async {
+    func loadTodos()  {
         do {
-            todos = try await interactor.fetchTodos()
+            todos = try interactor.getTodo()
         } catch {
             print("Error loading todos: \(error)")
         }
     }
     
-    func saveTodo(title: String, description: String?) async {
+    func saveTodo(title: String, description: String?) {
         do {
-            try interactor.saveToDo(title: title, description: description)
-            await loadTodos()
+            try interactor.saveNewTask(title: title, description: description)
+            loadTodos()
+       
         } catch {
-            print("Error saving todo: \(error)")
+            if let error = error as? ErrorService {
+                print("Error saving todo: \(error)")
+            }
         }
     }
     
-    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) async {
+    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) {
         do {
-            try interactor.updateToDo(todo, newTitle: newTitle, newDescription: newDescription)
-            await loadTodos()
+            try interactor.updateTask(todo, newTitle: newTitle, newDescription: newDescription)
+            loadTodos()
+            
         } catch {
             print("Error updating todo: \(error)")
+            
         }
     }
     
-    func deleteTodo(_ todo: TodoEntity) async {
+    func deleteTodo(_ todo: TodoEntity) {
         do {
-            try interactor.deleteTodo(todo)
-            await loadTodos()
+            try interactor.deleteTask(todo)
+            loadTodos()
+            
         } catch {
             print("Error deleting todo: \(error)")
         }

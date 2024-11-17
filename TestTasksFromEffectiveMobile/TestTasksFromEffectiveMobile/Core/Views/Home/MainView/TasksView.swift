@@ -9,6 +9,8 @@ import SwiftUI
 
 struct TasksView: View {
     @State var text: String = ""
+    @EnvironmentObject var router: TodoRouter
+    @StateObject var presenter = TodoPresenterImpl(todoInteractor: TodoInteractorImpl())
     var body: some View {
             
             VStack(alignment: .leading) {
@@ -20,14 +22,15 @@ struct TasksView: View {
                 CustomSearchBar(placeholder: "Search", text: $text)
                 
                 List {
-                    ForEach(0..<10) { _ in
+                    ForEach(presenter.todos, id: \.id) { todo in
                         
-                        TaskCellView( action: {})
+                        TaskCellView(task: todo)
                     }
                 }
-                
                 .listStyle(PlainListStyle())
-                
+                .onAppear() {
+                    presenter.loadTodos()
+                }
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)

@@ -13,10 +13,8 @@ extension ToDo {
         let entity = TodoEntity(context: context)
         entity.id = UUID(uuidString: "\(self.id)") ?? UUID()
         entity.todo = todo
-        entity.descriptionn = description
         entity.userId = Int16(userId)
         entity.completed = completed
-        entity.createdAt = createdAt
         return entity
     }
 }

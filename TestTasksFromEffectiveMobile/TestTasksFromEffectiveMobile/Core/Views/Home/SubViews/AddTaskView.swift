@@ -10,7 +10,8 @@ import SwiftUI
 struct AddTaskView: View {
     @State private var title: String = ""
     @State private var description: String = ""
-    @Environment(\.dismiss) var dismiss
+    
+   
     var body: some View {
         ZStack {
             
@@ -18,8 +19,7 @@ struct AddTaskView: View {
                 TextField("Title", text: $title)
                     .font(.headline)
                     .padding()
-                   // .background(Color.primary.opacity(0.15))
-                   // .clipShape(RoundedRectangle(cornerRadius: 15))
+                   
                 TextArea(text: $description, placeholder: "add your todo here")
                 
                 Button{
@@ -47,7 +47,7 @@ struct AddTaskView: View {
         .toolbar{
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    dismiss()
+                    
                 }label: {
                     Image(systemName: "chevron.left")
                         .font(.headline)

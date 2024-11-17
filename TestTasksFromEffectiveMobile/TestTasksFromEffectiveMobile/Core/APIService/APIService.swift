@@ -8,29 +8,32 @@
 import Foundation
 
 protocol APIService {
-    func fetchToDos() async throws -> TodoResponse
+    func fetchToDos() async throws -> [ToDo]
 }
 
 final class APIServiceImpl: APIService {
     
     // MARK: - Properties
-    private let urlTodos = "https://dummyjson.com/todos"
+    private let urlTodos = "https://drive.google.com/file/d/1MXypRbK2CS9fqPhTtPonn580h1sHUs2W/view"
     private let decoder = JSONDecoder()
     
     
     // MARK: - Initializer
-    private init() {}
+    init() {
+        decoder.dateDecodingStrategy = .iso8601
+    }
     
     
     // MARK: - Methods
-    func fetchToDos() async throws ->  TodoResponse {
+    func fetchToDos() async throws ->  [ToDo] {
         guard let url = URL(string: urlTodos) else { throw ErrorService.invalidURL }
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else { throw ErrorService.invalidResponse }
         
         do {
-            return try decoder.decode(TodoResponse.self, from: data)
+            return try decoder.decode([ToDo].self, from: data)
+            
         } catch  {
             throw ErrorService.invalidData
         }

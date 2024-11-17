@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct DetailView: View {
-    
+    @EnvironmentObject var presenter: TodoPresenterImpl
+    @EnvironmentObject var router: TodoRouter
     var body: some View {
         
         VStack(spacing: 0) {
@@ -17,11 +18,11 @@ struct DetailView: View {
             
             HStack{
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Почтитать книгу")
+                    Text(presenter.title)
                         .font(.headline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
-                    Text("про java и swift")
+                    Text(presenter.description)
                         .font(.subheadline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
@@ -44,7 +45,7 @@ struct DetailView: View {
                     
                     Spacer()
                     Button {
-                        
+                        router.navigate(to: .editTodo)
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
@@ -91,6 +92,7 @@ struct DetailView: View {
         .navigationBarHidden(true)
         
     }
+    
     func formatDate(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd/MM/yy"
@@ -98,6 +100,3 @@ struct DetailView: View {
     }
 }
 
-#Preview {
-    DetailView()
-}

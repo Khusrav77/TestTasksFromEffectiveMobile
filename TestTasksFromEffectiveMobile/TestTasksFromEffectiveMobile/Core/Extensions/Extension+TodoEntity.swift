@@ -13,9 +13,7 @@ extension TodoEntity {
         let todo = TodoEntity(context: context)
         todo.id = UUID()
         todo.todo = "Test Todo"
-        todo.descriptionn = "This is a description for testing purposes."
         todo.completed = false
-        todo.createdAt = Date()
         return todo
     }
 }

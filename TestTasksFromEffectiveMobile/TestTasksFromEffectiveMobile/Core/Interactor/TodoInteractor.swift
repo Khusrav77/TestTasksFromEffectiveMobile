@@ -9,46 +9,38 @@ import Foundation
 import CoreData
 
 protocol TodoInteractor {
-    func fetchTodos() async throws -> [TodoEntity]
-    func saveToDo(title: String, description: String?) throws
-    func updateToDo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws
-    func deleteTodo(_ todo: TodoEntity) throws
+    func getTodo()throws -> [TodoEntity]
+    func saveNewTask(title: String, description: String?) throws
+    func updateTask(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws
+    func deleteTask(_ todo: TodoEntity) throws
 }
 
 final class TodoInteractorImpl: TodoInteractor {
     // MARK: - Properties
+    private var todos: [TodoEntity] = []
     private let apiService: APIService
     private let coreDataManager: CoreDataManager
     
     
     // MARK: - Initializer
-    init(apiService: APIService, coreDataManager: CoreDataManager) {
+    init(apiService: APIService = APIServiceImpl(), coreDataManager: CoreDataManager = CoreDataManagerImpl()) {
         self.apiService = apiService
         self.coreDataManager = coreDataManager
+        
+        loadTodosFromCoreData()
     }
     
     
     // MARK: - Methods
-    func fetchTodos() async throws -> [TodoEntity] {
-        let context = coreDataManager.backgroundContext
-        let request: NSFetchRequest<TodoEntity> = TodoEntity.fetchRequest()
-        
-        let savedTodos = try context.performAndWait {
-            try context.fetch(request)
+    func getTodo()throws -> [TodoEntity] {
+        if todos .isEmpty {
+            loadTodosFromCoreData()
         }
-        
-        if savedTodos.isEmpty {
-            try await syncTodosFromAPI()
-            return try context.performAndWait {
-                try context.fetch(request)
-            }
-        }
-        
-        return savedTodos
+        return todos
     }
     
     
-    func saveToDo(title: String, description: String?) throws {
+    func saveNewTask(title: String, description: String?) throws {
         let context = coreDataManager.viewContext
         let newTodo = TodoEntity(context: context)
         newTodo.id = UUID()
@@ -60,7 +52,7 @@ final class TodoInteractorImpl: TodoInteractor {
     }
     
     
-    func updateToDo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws {
+    func updateTask(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws {
         
         if let newTitle = newTitle {
             todo.todo = newTitle
@@ -73,21 +65,58 @@ final class TodoInteractorImpl: TodoInteractor {
     }
     
     
-    func deleteTodo(_ todo: TodoEntity) throws {
+    func deleteTask(_ todo: TodoEntity) throws {
         let context = coreDataManager.viewContext
         context.delete(todo)
         coreDataManager.saveContext()
     }
     
-    private func syncTodosFromAPI() async throws {
-        let context = coreDataManager.backgroundContext
-        let todosResponse = try await apiService.fetchToDos()
-        
-        context.performAndWait {
-            todosResponse.todos.forEach { todo in
-                let _ = todo.toEntity(context: context)
-            }
-            try? context.save()
+    
+    // MARK: - Private Methods
+    private  func loadTodosFromCoreData() {
+        let request: NSFetchRequest<TodoEntity> = TodoEntity.fetchRequest()
+        do {
+            todos = try coreDataManager.viewContext.fetch(request)
+        } catch  {
+            print("Error fetching todos from CoreData: \(error)")
         }
     }
-}
+    
+    
+    private func fetchTodosFromAPI() async throws {
+        
+        do {
+            let todos = try await apiService.fetchToDos()
+            saveTodosIpa(todos)
+            
+        } catch {
+            if let error = error as? ErrorService {
+                print("Error loading todos from ipa \(error)")
+            }
+        }
+    }
+    
+    
+    private func saveTodosIpa(_ todos: [ToDo]) {
+        let backgroundContext = coreDataManager.backgroundContext
+        
+        backgroundContext.perform {
+            todos.forEach { todo in
+                    let entity = TodoEntity(context: backgroundContext)
+                    entity.id = UUID(uuidString: "\(todo.id)") ?? UUID()
+                    entity.todo = todo.todo
+                    entity.userId = Int16(todo.userId)
+                    entity.completed = todo.completed
+                }
+            }
+            
+            do {
+                try backgroundContext.save()
+                
+            } catch {
+                print("Error saving todos to CoreData: \(error)")
+            }
+        }
+    }
+    
+

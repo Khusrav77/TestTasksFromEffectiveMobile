@@ -10,7 +10,7 @@ import SwiftUI
 struct EditTaskView: View {
     @State private var title: String = ""
     @State private var description: String = ""
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var router: TodoRouter
     var body: some View {
         ZStack {
             
@@ -25,7 +25,7 @@ struct EditTaskView: View {
                
                 
                 Button{
-                    
+                    router.goBack()
                 } label: {
                     Text("Save")
                 }
@@ -49,7 +49,7 @@ struct EditTaskView: View {
         .toolbar{
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    dismiss()
+                    router.goBack()
                 }label: {
                     Image(systemName: "chevron.left")
                         .font(.headline)
@@ -60,9 +60,3 @@ struct EditTaskView: View {
     }
 }
 
-#Preview {
-    NavigationView {
-        EditTaskView()
-    }
-   
-}

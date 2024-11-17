@@ -24,7 +24,7 @@ struct ContentView: View {
                         DetailView()
                     
                     case.editTodo:
-                        EditTaskView()
+                        EditTaskView(router: router)
                         
                     case.createTodo:
                         AddTaskView()

@@ -10,48 +10,48 @@ import CoreData
 
 struct TaskCellView: View {
     // MARK: - Properties
-    @State var completed: Bool = false
-    let action: () -> Void
+    let task: TodoEntity
+    
     
     // MARK: - Body
     var body: some View {
         HStack(alignment: .top, spacing: 6) {
             Button {
-                action()
+                
             }label: {
-                Image(systemName: completed ?  "checkmark.circle" : "circle")
-                    .foregroundStyle(completed ? Color.yellow : Color.secondary)
+                Image(systemName: task.completed ?  "checkmark.circle" : "circle")
+                    .foregroundStyle(task.completed ? Color.yellow : Color.secondary)
                 
             }
             .buttonStyle(.borderless)
             
             VStack(alignment: .leading, spacing:6) {
                 
-                if completed {
-                    Text("Почитать книгу")
+                if task.completed {
+                    Text(task.todo ?? "no todo")
                         .font(.headline)
                         .strikethrough()
                         .foregroundStyle(.primary.secondary)
                     
                 } else {
-                    Text("Почтитать книгу")
+                    Text(task.todo ?? "no todo")
                         .font(.headline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
                 }
                 
-                if completed {
-                    Text("про java и swift")
+                if task.completed {
+                    Text(task.descriptionn ?? "no todo")
                         .font(.subheadline)
                         .foregroundStyle(.primary.secondary)
                 } else {
-                    Text("про java и swift")
+                    Text(task.descriptionn ?? "no todo")
                         .font(.subheadline)
                         .foregroundStyle(.primary.opacity(0.9))
                 }
                 
                 
-                Text(formatDate(Date()))
+                Text(formatDate(task.createdAt ?? Date()))
                     .font(.subheadline)
                     .foregroundStyle(.primary.secondary)
                 
@@ -75,5 +75,5 @@ struct TaskCellView: View {
 #Preview {
     
     
-    TaskCellView(action: {})
+    TasksView()
 }
