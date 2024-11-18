@@ -8,8 +8,28 @@
 import SwiftUI
 
 struct CustomTabBar: View {
+    @EnvironmentObject var router: TodoRouter
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Spacer()
+            
+            Button(action: { router.navigateToTab(.tasks) }) {
+                Text("Задачи")
+            }
+            .foregroundColor(router.currentTab == .tasks ? .yellow : .gray)
+            
+            Spacer()
+            
+            Button(action: { router.navigateToTab(.add) }) {
+                Image(systemName: "square.and.pencil")
+            }
+            .font(.system(size: 24, weight: .bold))
+            .foregroundColor(router.currentTab == .add ? .yellow : .gray)
+            
+            Spacer()
+        }
+        .padding()
     }
 }
 

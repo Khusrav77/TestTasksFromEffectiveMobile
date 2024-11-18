@@ -18,7 +18,7 @@ struct MainTabView: View {
             TasksView()
                 .tag(Destination.Tab.tasks)
                 .onAppear {
-                    router.navigateToTab(.tasks) // Устанавливаем текущий таб
+                    router.navigateToTab(.tasks) 
                 }
             
             AddTaskView()
@@ -28,31 +28,10 @@ struct MainTabView: View {
                 }
         }
         .overlay(alignment: .bottom) {
-            tabBar
+            CustomTabBar()
         }
     }
     
-    private var tabBar: some View {
-        HStack {
-            Spacer()
-            
-            Button(action: { router.navigateToTab(.tasks) }) {
-                Text("Задачи")
-            }
-            .foregroundColor(router.currentTab == .tasks ? .yellow : .gray)
-            
-            Spacer()
-            
-            Button(action: { router.navigateToTab(.add) }) {
-                Image(systemName: "square.and.pencil")
-            }
-            .font(.system(size: 24, weight: .bold))
-            .foregroundColor(router.currentTab == .add ? .yellow : .gray)
-            
-            Spacer()
-        }
-        .padding()
-    }
 }
 
 
