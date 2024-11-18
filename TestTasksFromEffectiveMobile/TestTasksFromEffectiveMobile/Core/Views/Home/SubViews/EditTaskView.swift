@@ -44,6 +44,10 @@ struct EditTaskView: View {
             .padding()
             .listStyle(.plain)
         }
+        .onAppear {
+            title = presenter.selectedTodo?.todo ?? ""
+            description = presenter.selectedTodo?.descriptionn ?? ""
+        }
         
         // MARK: - Navigation Bar
         .navigationTitle("Править задачу")

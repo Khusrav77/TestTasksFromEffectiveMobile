@@ -27,7 +27,7 @@ struct DetailView: View {
                         .font(.subheadline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
-                    Text(formatDate(Date()))
+                    Text(formatDate(todo.createdAt ?? Date()))
                         .font(.subheadline)
                         .foregroundStyle(.primary.secondary)
                 }

@@ -9,13 +9,13 @@ import SwiftUI
 
 struct CustomTabBar: View {
     @EnvironmentObject var router: TodoRouter
-    
+    @EnvironmentObject var presenter: TodoPresenterImpl
     var body: some View {
         HStack {
             Spacer()
             
             Button(action: { router.navigateToTab(.tasks) }) {
-                Text("Задачи")
+                Text(presenter.todos.count > 0 ? "Задачи (\(presenter.todos.count))" :"Задачи")
             }
             .foregroundColor(router.currentTab == .tasks ? .yellow : .gray)
             

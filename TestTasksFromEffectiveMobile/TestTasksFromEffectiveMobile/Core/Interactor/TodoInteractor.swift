@@ -14,6 +14,8 @@ protocol TodoInteractor {
     func saveNewTask(title: String, description: String?) throws
     func updateTask(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws
     func deleteTask(_ todo: TodoEntity) throws
+    func deletAtOffset(_ offset: IndexSet) throws
+    func completeTodo (_ todo: TodoEntity) throws
 }
 
 final class TodoInteractorImpl: TodoInteractor {
@@ -27,9 +29,7 @@ final class TodoInteractorImpl: TodoInteractor {
         self.apiService = apiService
         self.coreDataManager = coreDataManager
         
-    
         loadTodosFromCoreData()
-        
     }
 
     // MARK: - Methods
@@ -78,6 +78,23 @@ final class TodoInteractorImpl: TodoInteractor {
         context.delete(todo)
         try self.coreDataManager.saveContext(context)
         loadTodosFromCoreData()
+    }
+    
+    func deletAtOffset(_ offset: IndexSet) throws {
+        offset.forEach { index in
+            let todo = todos[index]
+            coreDataManager.viewContext.delete(todo)
+        }
+        todos.remove(atOffsets: offset)
+        try self.coreDataManager.saveContext(coreDataManager.viewContext)
+    }
+    
+    func completeTodo (_ todo: TodoEntity) throws {
+        if let index = todos.firstIndex(where: { $0.id == todo.id }) {
+            todos[index].completed.toggle()
+            try self.coreDataManager.saveContext(coreDataManager.viewContext)
+            loadTodosFromCoreData()
+        }
     }
 
     // MARK: - Private Methods

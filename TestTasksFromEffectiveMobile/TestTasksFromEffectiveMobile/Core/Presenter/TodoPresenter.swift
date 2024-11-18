@@ -14,6 +14,7 @@ protocol TodoPresenter: ObservableObject {
     func saveTodo(title: String, description: String?)
     func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?)
     func deleteTodo(_ todo: TodoEntity)
+    func completeTodo(_ todo: TodoEntity)
 }
 
 class TodoPresenterImpl: TodoPresenter {
@@ -47,6 +48,7 @@ class TodoPresenterImpl: TodoPresenter {
         }
     }
     
+    
     func loadTodos()  {
         do {
             todos = try interactor.getTodo()
@@ -54,6 +56,7 @@ class TodoPresenterImpl: TodoPresenter {
             print("Error loading todos: \(error)")
         }
     }
+    
     
     func saveTodo(title: String, description: String?) {
         do {
@@ -67,6 +70,7 @@ class TodoPresenterImpl: TodoPresenter {
         }
     }
     
+    
     func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) {
         do {
             try interactor.updateTask(todo, newTitle: newTitle, newDescription: newDescription)
@@ -78,6 +82,19 @@ class TodoPresenterImpl: TodoPresenter {
         }
     }
     
+    
+    func deletAtOffset(_ offset: IndexSet) {
+        do {
+            try interactor.deletAtOffset(offset)
+            loadTodos()
+            
+        } catch {
+        print("Error deleting todo: \(error)")
+       
+        }
+    }
+    
+    
     func deleteTodo(_ todo: TodoEntity) {
         do {
             try interactor.deleteTask(todo)
@@ -85,6 +102,15 @@ class TodoPresenterImpl: TodoPresenter {
             
         } catch {
             print("Error deleting todo: \(error)")
+        }
+    }
+    
+    func completeTodo(_ todo: TodoEntity) {
+        do {
+            try interactor.completeTodo(todo)
+            loadTodos()
+        } catch  {
+            print("Error completing todo: \(error)")
         }
     }
 }

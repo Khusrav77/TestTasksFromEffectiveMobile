@@ -11,13 +11,13 @@ import CoreData
 struct TaskCellView: View {
     // MARK: - Properties
     let task: TodoEntity
-    
+    let action: () -> Void
     
     // MARK: - Body
     var body: some View {
         HStack(alignment: .top, spacing: 6) {
             Button {
-                
+              action()
             }label: {
                 Image(systemName: task.completed ?  "checkmark.circle" : "circle")
                     .foregroundStyle(task.completed ? Color.yellow : Color.secondary)
