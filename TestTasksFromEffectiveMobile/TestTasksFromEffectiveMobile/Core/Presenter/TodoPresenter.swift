@@ -9,56 +9,108 @@ import Foundation
 
 protocol TodoPresenter: ObservableObject {
     var todos: [TodoEntity] { get set }
-    func loadTodos() async
-    func saveTodo(title: String, description: String?) async
-    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) async
-    func deleteTodo(_ todo: TodoEntity) async
+    func fetchTodosApi()async
+    func loadTodos()
+    func saveTodo(title: String, description: String?)
+    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?)
+    func deleteTodo(_ todo: TodoEntity)
+    func completeTodo(_ todo: TodoEntity)
 }
 
 class TodoPresenterImpl: TodoPresenter {
+   
     // MARK: - Properties
+    @Published var selectedTodo: TodoEntity?
+    
     @Published var todos: [TodoEntity] = []
+   
+    @Published var title: String = ""
+    @Published var description: String = ""
+    @Published var completed: Bool = false
+    
     
     private let interactor: TodoInteractor
     
     // MARK: - Initializer
     init(todoInteractor: TodoInteractor) {
         self.interactor = todoInteractor
+        loadTodos()
     }
     
+   
     // MARK: - Methods
-    func loadTodos() async {
+    
+    func fetchTodosApi()async {
         do {
-            todos = try await interactor.fetchTodos()
+             try await interactor.fetchTodosFromAPI()
         } catch {
             print("Error loading todos: \(error)")
         }
     }
     
-    func saveTodo(title: String, description: String?) async {
+    
+    func loadTodos()  {
         do {
-            try interactor.saveToDo(title: title, description: description)
-            await loadTodos()
+            todos = try interactor.getTodo()
         } catch {
-            print("Error saving todo: \(error)")
+            print("Error loading todos: \(error)")
         }
     }
     
-    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) async {
+    
+    func saveTodo(title: String, description: String?) {
         do {
-            try interactor.updateToDo(todo, newTitle: newTitle, newDescription: newDescription)
-            await loadTodos()
+            try interactor.saveNewTask(title: title, description: description)
+            loadTodos()
+       
+        } catch {
+            if let error = error as? ErrorService {
+                print("Error saving todo: \(error)")
+            }
+        }
+    }
+    
+    
+    func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?) {
+        do {
+            try interactor.updateTask(todo, newTitle: newTitle, newDescription: newDescription)
+            loadTodos()
+            
         } catch {
             print("Error updating todo: \(error)")
+            
         }
     }
     
-    func deleteTodo(_ todo: TodoEntity) async {
+    
+    func deletAtOffset(_ offset: IndexSet) {
         do {
-            try interactor.deleteTodo(todo)
-            await loadTodos()
+            try interactor.deletAtOffset(offset)
+            loadTodos()
+            
+        } catch {
+        print("Error deleting todo: \(error)")
+       
+        }
+    }
+    
+    
+    func deleteTodo(_ todo: TodoEntity) {
+        do {
+            try interactor.deleteTask(todo)
+            loadTodos()
+            
         } catch {
             print("Error deleting todo: \(error)")
+        }
+    }
+    
+    func completeTodo(_ todo: TodoEntity) {
+        do {
+            try interactor.completeTodo(todo)
+            loadTodos()
+        } catch  {
+            print("Error completing todo: \(error)")
         }
     }
 }

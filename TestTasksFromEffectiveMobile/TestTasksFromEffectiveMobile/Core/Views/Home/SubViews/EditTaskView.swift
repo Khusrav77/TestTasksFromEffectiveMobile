@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct EditTaskView: View {
+    let todo: TodoEntity
     @State private var title: String = ""
     @State private var description: String = ""
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var router: TodoRouter
+    @EnvironmentObject var presenter: TodoPresenterImpl
     var body: some View {
         ZStack {
             
@@ -25,7 +27,8 @@ struct EditTaskView: View {
                
                 
                 Button{
-                    
+                    presenter.updateTodo(todo, newTitle: title, newDescription: description)
+                    router.goBack(by: 2)
                 } label: {
                     Text("Save")
                 }
@@ -41,6 +44,10 @@ struct EditTaskView: View {
             .padding()
             .listStyle(.plain)
         }
+        .onAppear {
+            title = presenter.selectedTodo?.todo ?? ""
+            description = presenter.selectedTodo?.descriptionn ?? ""
+        }
         
         // MARK: - Navigation Bar
         .navigationTitle("Править задачу")
@@ -49,7 +56,7 @@ struct EditTaskView: View {
         .toolbar{
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    dismiss()
+                    router.goBack()
                 }label: {
                     Image(systemName: "chevron.left")
                         .font(.headline)
@@ -60,9 +67,3 @@ struct EditTaskView: View {
     }
 }
 
-#Preview {
-    NavigationView {
-        EditTaskView()
-    }
-   
-}

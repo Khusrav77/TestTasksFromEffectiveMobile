@@ -12,7 +12,7 @@ protocol CoreDataManager {
     var viewContext: NSManagedObjectContext { get }
     var backgroundContext: NSManagedObjectContext { get }
     
-    func saveContext()
+    func saveContext(_ context: NSManagedObjectContext) throws
    
     
 }
@@ -29,8 +29,11 @@ final class CoreDataManagerImpl: CoreDataManager {
     }
     
     var backgroundContext: NSManagedObjectContext {
-        return persistentContainer.newBackgroundContext()
+        let context = persistentContainer.newBackgroundContext()
+        context.automaticallyMergesChangesFromParent = true
+        return context
     }
+
     
     
     // MARK: - Initializer
@@ -47,14 +50,12 @@ final class CoreDataManagerImpl: CoreDataManager {
    
     
     // MARK: - Methods
-    func saveContext() {
-        let context = persistentContainer.viewContext
+    func saveContext(_ context: NSManagedObjectContext)throws {
         if context.hasChanges {
             do {
                 try context.save()
             } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                throw CoreDataError.saveError
             }
         }
     }

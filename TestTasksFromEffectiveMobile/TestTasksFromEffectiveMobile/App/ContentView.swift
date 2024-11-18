@@ -7,35 +7,39 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct ContentView: View {
-    @StateObject var router = TodoRouter()
-    
+    @EnvironmentObject var router: TodoRouter
+
     var body: some View {
-        
         NavigationStack(path: $router.path) {
             MainTabView()
                 .navigationDestination(for: Destination.self) { destination in
                     switch destination {
-                   
-                    case.listTodos:
-                        MainTabView()
-                    
-                    case.detailsTodo:
-                        DetailView()
-                    
-                    case.editTodo:
-                        EditTaskView()
-                        
-                    case.createTodo:
-                        AddTaskView()
+                    case .listTodos:
+                        TasksView() // Вкладка со списком задач
+                    case .detailsTodo(let todo):
+                        DetailView(todo: todo)
+                    case .createTodo:
+                        AddTaskView() // Экран создания новой задачи
+                    case .editTodo(let todo):
+                        EditTaskView(todo: todo)
                     }
                 }
         }
-        .environmentObject(router)
+        .onAppear {
+            // Начальная установка таба
+            router.navigateToTab(.tasks)
+        }
     }
 }
 
+
 #Preview {
+    
     ContentView()
+        .environmentObject(TodoRouter())
+      
 }
 

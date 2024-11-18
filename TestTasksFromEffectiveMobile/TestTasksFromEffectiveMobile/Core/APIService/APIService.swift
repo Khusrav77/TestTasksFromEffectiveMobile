@@ -19,7 +19,9 @@ final class APIServiceImpl: APIService {
     
     
     // MARK: - Initializer
-    private init() {}
+    init() {
+        decoder.dateDecodingStrategy = .iso8601
+    }
     
     
     // MARK: - Methods
@@ -28,9 +30,10 @@ final class APIServiceImpl: APIService {
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else { throw ErrorService.invalidResponse }
-        
+            print("DEBUG: Data fetched Success from \(urlTodos)")
         do {
             return try decoder.decode(TodoResponse.self, from: data)
+            
         } catch  {
             throw ErrorService.invalidData
         }

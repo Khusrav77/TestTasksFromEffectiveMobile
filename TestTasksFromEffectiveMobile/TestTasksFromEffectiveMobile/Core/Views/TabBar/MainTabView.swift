@@ -7,56 +7,33 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct MainTabView: View {
-    @State private var selectedTab: Tab = .tasks
-    
-    enum Tab: String {
-        case tasks = "tasks"
-        case add = "add"
-    }
+    @EnvironmentObject var router: TodoRouter
+    @EnvironmentObject var presenter: TodoPresenterImpl
     
     var body: some View {
-        ZStack {
-            TabView(selection: $selectedTab) {
-                
-                TasksView().tag(Tab.tasks)
-                
-                AddTaskView().tag(Tab.add)
-                
-            }
-            .overlay(alignment: .bottom) {
-                HStack(alignment: .top) {
-                    Spacer()
-                    
-                    Button(action: { selectedTab = .tasks }) {
-                        Text("7 задач") }
-                    .foregroundColor(selectedTab == .tasks ? .yellow : .gray)
-                    Spacer()
-                    
-                    Button(action: { selectedTab = .add}) {
-                        Image(systemName: "square.and.pencil")}
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(selectedTab == .add ? .yellow : .gray)
-                    .padding(.trailing)
-                    
+        TabView(selection: $router.currentTab) {
+            TasksView()
+                .tag(Destination.Tab.tasks)
+                .onAppear {
+                    router.navigateToTab(.tasks) 
                 }
-                .padding()
-                .padding(.bottom, 16)
-                
-            }
+            
+            AddTaskView()
+                .tag(Destination.Tab.add)
+                .onAppear {
+                    router.navigateToTab(.add)
+                }
         }
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
-        .ignoresSafeArea(edges: .bottom)
-        
+        .overlay(alignment: .bottom) {
+            CustomTabBar()
+        }
     }
+    
 }
 
 
 
-
-#Preview {
-    MainTabView()
-}
 

@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct DetailView: View {
-    
+    let todo: TodoEntity
+    @EnvironmentObject var router: TodoRouter
+    @EnvironmentObject var presenter: TodoPresenterImpl
     var body: some View {
         
         VStack(spacing: 0) {
@@ -17,15 +19,15 @@ struct DetailView: View {
             
             HStack{
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Почтитать книгу")
+                    Text(todo.todo ?? "No title")
                         .font(.headline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
-                    Text("про java и swift")
+                    Text(todo.descriptionn ?? "No description")
                         .font(.subheadline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
-                    Text(formatDate(Date()))
+                    Text(formatDate(todo.createdAt ?? Date()))
                         .font(.subheadline)
                         .foregroundStyle(.primary.secondary)
                 }
@@ -44,7 +46,7 @@ struct DetailView: View {
                     
                     Spacer()
                     Button {
-                        
+                        router.navigate(to: .editTodo(todo: todo))
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
@@ -71,7 +73,8 @@ struct DetailView: View {
                     
                     Spacer()
                     Button {
-                        
+                        presenter.deleteTodo(todo)
+                        router.goBack()
                     } label: {
                         Image(systemName: "trash")
                         
@@ -86,11 +89,21 @@ struct DetailView: View {
             .padding(.horizontal)
             Spacer()
         }
-        .navigationTitle("")
         .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    router.goBack()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.headline)
+                        .foregroundStyle(Color.primary)
+                }
+            }
+        }
         
     }
+    
     func formatDate(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd/MM/yy"
@@ -98,6 +111,3 @@ struct DetailView: View {
     }
 }
 
-#Preview {
-    DetailView()
-}
