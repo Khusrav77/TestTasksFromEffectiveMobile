@@ -22,7 +22,6 @@ enum Destination: Hashable {
     case editTodo(todo: TodoEntity)
     
     
-    
     enum Tab: String {
         case tasks = "tasks"
         case add = "add"
@@ -42,9 +41,11 @@ class TodoRouter: ObservableObject {
         currentTab = tab
     }
     
+    
     func navigate(to destination: Destination) {
         path.append(destination)
     }
+    
     
     func goBack() {
         if !path.isEmpty {
@@ -52,14 +53,17 @@ class TodoRouter: ObservableObject {
         }
     }
     
+    
     func goBackToRoot() {
         path.removeAll()
     }
+    
     
     func goBack(by steps: Int) {
         guard steps > 0 && steps <= path.count else { return }
         path.removeLast(steps)
     }
+    
 }
 
 
