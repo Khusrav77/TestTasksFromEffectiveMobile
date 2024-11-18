@@ -14,7 +14,7 @@ protocol APIService {
 final class APIServiceImpl: APIService {
     
     // MARK: - Properties
-    private let urlTodos = "https://drive.google.com/file/d/1MXypRbK2CS9fqPhTtPonn580h1sHUs2W/view"
+    private let urlTodos = "https://dummyjson.com/todos"
     private let decoder = JSONDecoder()
     
     
@@ -30,7 +30,7 @@ final class APIServiceImpl: APIService {
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else { throw ErrorService.invalidResponse }
-        
+            print("DEBUG: Data fetched Success from \(urlTodos)")
         do {
             return try decoder.decode(TodoResponse.self, from: data)
             

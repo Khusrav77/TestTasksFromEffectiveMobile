@@ -9,6 +9,7 @@ import Foundation
 
 protocol TodoPresenter: ObservableObject {
     var todos: [TodoEntity] { get set }
+    func fetchTodosApi()async
     func loadTodos()
     func saveTodo(title: String, description: String?)
     func updateTodo(_ todo: TodoEntity, newTitle: String?, newDescription: String?)
@@ -32,10 +33,20 @@ class TodoPresenterImpl: TodoPresenter {
     // MARK: - Initializer
     init(todoInteractor: TodoInteractor) {
         self.interactor = todoInteractor
+        loadTodos()
     }
     
    
     // MARK: - Methods
+    
+    func fetchTodosApi()async {
+        do {
+             try await interactor.fetchTodosFromAPI()
+        } catch {
+            print("Error loading todos: \(error)")
+        }
+    }
+    
     func loadTodos()  {
         do {
             todos = try interactor.getTodo()

@@ -21,21 +21,29 @@ struct TasksView: View {
                 
                 CustomSearchBar(placeholder: "Search", text: $text)
                 
-                List {
-                    ForEach(presenter.todos, id: \.id) { todo in
-                        
-                        TaskCellView(task: todo)
-                            .onTapGesture {
-                                router.navigate(to: .detailsTodo(todo: todo))
-                                           }
+                if presenter.todos.isEmpty {
+                    ProgressView("Loading todos...")
+                        .task {
+                            await presenter.fetchTodosApi()
+                        }
+                } else {
+                    List {
+                        ForEach(presenter.todos, id: \.id) { todo in
+                            
+                            TaskCellView(task: todo)
+                                .onTapGesture {
+                                    router.navigate(to: .detailsTodo(todo: todo))
+                                               }
+                        }
                     }
+                    .listStyle(PlainListStyle())
+//                    .onAppear() {
+//                        if presenter.todos .isEmpty{
+//                            presenter.loadTodos()
+//                        }
+//                    }
                 }
-                .listStyle(PlainListStyle())
-                .onAppear() {
-                    if presenter.todos .isEmpty{
-                        presenter.loadTodos()
-                    }
-                }
+               
             }
 //            .navigationBarBackButtonHidden(true)
 //            .navigationBarHidden(true)
