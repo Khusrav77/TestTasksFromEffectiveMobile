@@ -8,7 +8,7 @@
 import Foundation
 
 protocol APIService {
-    func fetchToDos() async throws -> [ToDo]
+    func fetchToDos() async throws -> TodoResponse
 }
 
 final class APIServiceImpl: APIService {
@@ -25,14 +25,14 @@ final class APIServiceImpl: APIService {
     
     
     // MARK: - Methods
-    func fetchToDos() async throws ->  [ToDo] {
+    func fetchToDos() async throws ->  TodoResponse {
         guard let url = URL(string: urlTodos) else { throw ErrorService.invalidURL }
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else { throw ErrorService.invalidResponse }
         
         do {
-            return try decoder.decode([ToDo].self, from: data)
+            return try decoder.decode(TodoResponse.self, from: data)
             
         } catch  {
             throw ErrorService.invalidData

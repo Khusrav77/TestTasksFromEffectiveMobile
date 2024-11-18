@@ -10,8 +10,9 @@ import SwiftUI
 struct AddTaskView: View {
     @State private var title: String = ""
     @State private var description: String = ""
+    @EnvironmentObject var router: TodoRouter
+    @EnvironmentObject var presenter: TodoPresenterImpl
     
-   
     var body: some View {
         ZStack {
             
@@ -21,9 +22,12 @@ struct AddTaskView: View {
                     .padding()
                    
                 TextArea(text: $description, placeholder: "add your todo here")
+                    .foregroundStyle(.white)
+                
                 
                 Button{
-                    
+                    presenter.saveTodo(title: title, description: description)
+                    router.goBackToRoot()
                 } label: {
                     Text("Save")
                 }
@@ -39,7 +43,6 @@ struct AddTaskView: View {
             .padding()
             .listStyle(.plain)
         }
-        
         // MARK: - Navigation Bar
         .navigationTitle("New Task")
         .navigationBarTitleDisplayMode(.inline)
@@ -47,7 +50,7 @@ struct AddTaskView: View {
         .toolbar{
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    
+                    router.goBack()
                 }label: {
                     Image(systemName: "chevron.left")
                         .font(.headline)
@@ -58,9 +61,4 @@ struct AddTaskView: View {
     }
 }
 
-#Preview {
-    NavigationView {
-        AddTaskView()
-    }
-    
-}
+

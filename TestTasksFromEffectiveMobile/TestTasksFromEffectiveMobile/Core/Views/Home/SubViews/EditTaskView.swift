@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct EditTaskView: View {
+    let todo: TodoEntity
     @State private var title: String = ""
     @State private var description: String = ""
     @EnvironmentObject var router: TodoRouter
+    @EnvironmentObject var presenter: TodoPresenterImpl
     var body: some View {
         ZStack {
             
@@ -25,7 +27,8 @@ struct EditTaskView: View {
                
                 
                 Button{
-                    router.goBack()
+                    presenter.updateTodo(todo, newTitle: title, newDescription: description)
+                    router.goBack(by: 2)
                 } label: {
                     Text("Save")
                 }

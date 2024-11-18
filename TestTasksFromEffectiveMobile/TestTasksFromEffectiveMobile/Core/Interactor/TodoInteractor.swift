@@ -48,12 +48,12 @@ final class TodoInteractorImpl: TodoInteractor {
         newTodo.descriptionn = description
         newTodo.completed = false
         newTodo.createdAt = Date()
-        coreDataManager.saveContext()
+        try coreDataManager.saveContext(context)
     }
     
     
     func updateTask(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws {
-        
+        let context = coreDataManager.viewContext
         if let newTitle = newTitle {
             todo.todo = newTitle
         }
@@ -61,14 +61,14 @@ final class TodoInteractorImpl: TodoInteractor {
         if let newDescription = newDescription {
             todo.descriptionn = newDescription
         }
-        coreDataManager.saveContext()
+        try coreDataManager.saveContext(context)
     }
     
     
     func deleteTask(_ todo: TodoEntity) throws {
         let context = coreDataManager.viewContext
         context.delete(todo)
-        coreDataManager.saveContext()
+        try coreDataManager.saveContext(context)
     }
     
     
@@ -87,7 +87,7 @@ final class TodoInteractorImpl: TodoInteractor {
         
         do {
             let todos = try await apiService.fetchToDos()
-            saveTodosIpa(todos)
+            saveTodosIpa(todos.todos)
             
         } catch {
             if let error = error as? ErrorService {
@@ -111,7 +111,7 @@ final class TodoInteractorImpl: TodoInteractor {
             }
             
             do {
-                try backgroundContext.save()
+                try coreDataManager.saveContext(backgroundContext)
                 
             } catch {
                 print("Error saving todos to CoreData: \(error)")

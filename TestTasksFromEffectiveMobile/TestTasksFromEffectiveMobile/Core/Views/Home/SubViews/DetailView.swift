@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct DetailView: View {
-    @EnvironmentObject var presenter: TodoPresenterImpl
+    let todo: TodoEntity
     @EnvironmentObject var router: TodoRouter
+    @EnvironmentObject var presenter: TodoPresenterImpl
     var body: some View {
         
         VStack(spacing: 0) {
@@ -18,11 +19,11 @@ struct DetailView: View {
             
             HStack{
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(presenter.title)
+                    Text(todo.todo ?? "No title")
                         .font(.headline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
-                    Text(presenter.description)
+                    Text(todo.descriptionn ?? "No description")
                         .font(.subheadline)
                         .foregroundStyle(.primary.opacity(0.9))
                     
@@ -45,7 +46,7 @@ struct DetailView: View {
                     
                     Spacer()
                     Button {
-                        router.navigate(to: .editTodo)
+                        router.navigate(to: .editTodo(todo: todo))
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
@@ -72,7 +73,8 @@ struct DetailView: View {
                     
                     Spacer()
                     Button {
-                        
+                        presenter.deleteTodo(todo)
+                        router.goBack()
                     } label: {
                         Image(systemName: "trash")
                         
@@ -87,9 +89,18 @@ struct DetailView: View {
             .padding(.horizontal)
             Spacer()
         }
-        .navigationTitle("")
         .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    router.goBack()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.headline)
+                        .foregroundStyle(Color.primary)
+                }
+            }
+        }
         
     }
     

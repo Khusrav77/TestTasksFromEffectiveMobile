@@ -15,9 +15,9 @@ struct ToDo: Codable, Identifiable {
 }
 
 
-//struct TodoResponse: Codable {
-//    let todos: [ToDo]
-//    let total: Int
-//    let skip: Int
-//    let limit: Int
-//}
+struct TodoResponse: Codable {
+    let todos: [ToDo]
+    let total: Int
+    let skip: Int
+    let limit: Int
+}

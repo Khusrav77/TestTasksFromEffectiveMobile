@@ -10,7 +10,7 @@ import SwiftUI
 struct TasksView: View {
     @State var text: String = ""
     @EnvironmentObject var router: TodoRouter
-    @StateObject var presenter = TodoPresenterImpl(todoInteractor: TodoInteractorImpl())
+    @EnvironmentObject var presenter: TodoPresenterImpl
     var body: some View {
             
             VStack(alignment: .leading) {
@@ -25,21 +25,22 @@ struct TasksView: View {
                     ForEach(presenter.todos, id: \.id) { todo in
                         
                         TaskCellView(task: todo)
+                            .onTapGesture {
+                                router.navigate(to: .detailsTodo(todo: todo))
+                                           }
                     }
                 }
                 .listStyle(PlainListStyle())
                 .onAppear() {
-                    presenter.loadTodos()
+                    if presenter.todos .isEmpty{
+                        presenter.loadTodos()
+                    }
                 }
             }
-            .navigationBarBackButtonHidden(true)
-            .navigationBarHidden(true)
-           
-            
+//            .navigationBarBackButtonHidden(true)
+//            .navigationBarHidden(true)
           
     }
 }
 
-#Preview {
-    TasksView()
-}
+

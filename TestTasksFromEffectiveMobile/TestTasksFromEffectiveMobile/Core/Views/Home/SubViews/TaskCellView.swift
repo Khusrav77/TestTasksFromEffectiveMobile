@@ -72,8 +72,3 @@ struct TaskCellView: View {
 }
 
 
-#Preview {
-    
-    
-    TasksView()
-}
