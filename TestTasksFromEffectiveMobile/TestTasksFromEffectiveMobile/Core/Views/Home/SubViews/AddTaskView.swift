@@ -27,7 +27,7 @@ struct AddTaskView: View {
                 
                 Button{
                     presenter.saveTodo(title: title, description: description)
-                    router.goBackToRoot()
+                    router.currentTab = .tasks
                 } label: {
                     Text("Save")
                 }
