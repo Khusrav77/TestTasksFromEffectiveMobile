@@ -20,9 +20,13 @@ struct AddTaskView: View {
                 TextField("Title", text: $title)
                     .font(.headline)
                     .padding()
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                    )
                    
                 TextArea(text: $description, placeholder: "add your todo here")
-                    .foregroundStyle(.white)
+                    
                 
                 
                 Button{
@@ -35,8 +39,8 @@ struct AddTaskView: View {
                 .frame(maxWidth: .infinity, minHeight: 55)
                 .foregroundStyle(.primary)
                 .background(.purple)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
-                
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .disabled(title.isEmpty)
                 Spacer()
                 
             }
