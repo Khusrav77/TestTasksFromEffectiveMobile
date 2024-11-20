@@ -14,8 +14,8 @@ protocol TodoInteractor {
     func saveNewTask(title: String, description: String?) throws
     func updateTask(_ todo: TodoEntity, newTitle: String?, newDescription: String?) throws
     func deleteTask(_ todo: TodoEntity) throws
-    func deletAtOffset(_ offset: IndexSet) throws
     func completeTodo (_ todo: TodoEntity) throws
+    func deletAtOffset(_ offset: IndexSet) throws
 }
 
 final class TodoInteractorImpl: TodoInteractor {
@@ -30,20 +30,19 @@ final class TodoInteractorImpl: TodoInteractor {
         self.coreDataManager = coreDataManager
         
         loadTodosFromCoreData()
+        
     }
 
+    
     // MARK: - Methods
     func getTodo() throws -> [TodoEntity] {
-        if todos.isEmpty {
-            loadTodosFromCoreData()
-        }
         return todos
     }
 
     
     func fetchTodosFromAPI() async throws {
        let apiTodos = try await apiService.fetchToDos()
-       saveTodosIpa(apiTodos.todos)
+       saveTodosApi(apiTodos.todos)
    }
     
     
@@ -80,6 +79,7 @@ final class TodoInteractorImpl: TodoInteractor {
         loadTodosFromCoreData()
     }
     
+    
     func deletAtOffset(_ offset: IndexSet) throws {
         offset.forEach { index in
             let todo = todos[index]
@@ -88,6 +88,7 @@ final class TodoInteractorImpl: TodoInteractor {
         todos.remove(atOffsets: offset)
         try self.coreDataManager.saveContext(coreDataManager.viewContext)
     }
+    
     
     func completeTodo (_ todo: TodoEntity) throws {
         if let index = todos.firstIndex(where: { $0.id == todo.id }) {
@@ -108,7 +109,7 @@ final class TodoInteractorImpl: TodoInteractor {
     }
 
 
-    private func saveTodosIpa(_ todos: [ToDo]) {
+    private func saveTodosApi(_ todos: [ToDo]) {
         let backgroundContext = coreDataManager.backgroundContext
         backgroundContext.perform {
             todos.forEach { todo in

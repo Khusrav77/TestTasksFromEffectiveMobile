@@ -26,11 +26,12 @@ final class APIServiceImpl: APIService {
     
     // MARK: - Methods
     func fetchToDos() async throws ->  TodoResponse {
+        
         guard let url = URL(string: urlTodos) else { throw ErrorService.invalidURL }
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else { throw ErrorService.invalidResponse }
-            print("DEBUG: Data fetched Success from \(urlTodos)")
+            
         do {
             return try decoder.decode(TodoResponse.self, from: data)
             
